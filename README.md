@@ -1,1 +1,1 @@
-[2025-10-19](Devlig/Rougelite/Rougelite10_19.md)
+[2025-10-19](Devlogs/Rougelite/Rougelite10_19.md)
