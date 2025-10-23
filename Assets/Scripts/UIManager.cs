@@ -5,10 +5,10 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     [Header("UI References")]
-    public Slider HP;                       // 拖入血条 Slider
-    public TextMeshProUGUI hpText;          // 拖入血量文本
-    public TextMeshProUGUI oreText;         // 拖入矿石文本
-    public TextMeshProUGUI timerText;       // 拖入计时文本
+    public Slider HP;                       // 血条 Slider
+    public TextMeshProUGUI hpText;          // 血量数值显示
+    public TextMeshProUGUI oreText;         // 矿石数量
+    public TextMeshProUGUI timerText;       // 倒计时文本
 
     [Header("Player Stats")]
     public float maxHealth = 100f;
@@ -16,19 +16,22 @@ public class UIManager : MonoBehaviour
     private int oreCount = 0;
 
     [Header("Game Timer")]
-    public float gameTime = 120f;           // 倒计时起始秒数
+    public float gameTime = 120f;           // 总时长
     private float timeLeft;
+    private bool isGameActive = true;       // 控制计时是否运行
 
     void Start()
     {
+        // 初始化玩家状态
         currentHealth = maxHealth;
         timeLeft = gameTime;
 
-        //同步血条参数
+        // 初始化血条
         HP.minValue = 0;
         HP.maxValue = maxHealth;
-        HP.value = maxHealth;
+        HP.value = currentHealth;
 
+        // 初始UI同步
         UpdateHealthUI();
         UpdateOreUI();
         UpdateTimerUI();
@@ -36,39 +39,40 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        //倒计时逻辑
-        if (timeLeft > 0)
+        if (isGameActive)
         {
-            timeLeft -= Time.deltaTime;
-            if (timeLeft < 0) timeLeft = 0;
-            UpdateTimerUI();
+            UpdateTimer();
         }
     }
 
-    //扣血
+    // 玩家状态控制
     public void TakeDamage(float amount)
     {
-        currentHealth -= amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
         UpdateHealthUI();
+
+        // 如果血量为0可以在这里触发死亡逻辑
+        if (currentHealth <= 0)
+        {
+            isGameActive = false;
+            Debug.Log("玩家死亡！");
+        }
     }
 
-    //回复血量
     public void Heal(float amount)
     {
-        currentHealth += amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         UpdateHealthUI();
     }
 
-    //增加矿石数量
     public void AddOre(int amount)
     {
         oreCount += amount;
         UpdateOreUI();
     }
 
-    //UI 更新
+    // UI更新函数
+
     private void UpdateHealthUI()
     {
         HP.value = currentHealth;
@@ -76,11 +80,26 @@ public class UIManager : MonoBehaviour
 
     private void UpdateOreUI()
     {
-        oreText.text = "矿石：" + oreCount.ToString();
+        oreText.text = $"矿石：{oreCount}";
     }
 
     private void UpdateTimerUI()
     {
-        timerText.text = "时间：" + Mathf.CeilToInt(timeLeft).ToString();
+        timerText.text = $"时间：{Mathf.CeilToInt(timeLeft)}s";
+    }
+
+    private void UpdateTimer()
+    {
+        if (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime;
+            if (timeLeft < 0) timeLeft = 0;
+            UpdateTimerUI();
+        }
+        else
+        {
+            isGameActive = false;
+            Debug.Log("时间到,可以触发BOSS战或商店逻辑");
+        }
     }
 }
