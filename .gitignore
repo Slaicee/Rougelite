@@ -12,4 +12,8 @@ MemoryCaptures/
 *.userprefs
 .DS_Store
 Thumbs.db
+<<<<<<< HEAD
 .vs/
+=======
+.vs/
+>>>>>>> slaice/base
