@@ -12,3 +12,4 @@ MemoryCaptures/
 *.userprefs
 .DS_Store
 Thumbs.db
+.vs/
