@@ -4,7 +4,7 @@ public class PlayerShoot : MonoBehaviour
 {
     public GameObject bulletPrefab;      // 拖入子弹预制体
     public Transform firePoint;          // 拖入发射点
-    public float bulletSpeed = 25f;
+    public float bulletSpeed = 50f;
     public float fireRate = 0.2f;        // 射击间隔
     public LayerMask groundMask;         // 地面层
     private float nextFireTime = 0f;
