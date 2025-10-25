@@ -12,3 +12,9 @@
 - 添加了子弹bullet、敌人enemy预制体以及激光raycast预制体（未实现）
 - 添加了玩家移动射击功能，并且由鼠标控制攻击方向，挂载了PlayerShoot脚本以及Bullet属性脚本，实现了基础的受击逻辑提示
 - 解决了玩家射线检测时摄像机与鼠标冲突的bug
+
+## 2025-10-25（Slaice）
+- 添加了敌人enemy的最基本逻辑（EnemyAI脚本），自动随机生成在地图四周（EnemyGenerate脚本）
+- 实现enemy自动侦测玩家位置，自动朝玩家移动，解决了enemy与player在update时的冲突问题：将enemy的位移方式从rb改为transform.position
+- 解决了enemy与ore碰撞的问题：直接取消layer的物理碰撞
+- 解决了enemy会在玩家周围聚成一坨的问题：添加avoidRadius
