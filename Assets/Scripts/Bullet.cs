@@ -10,13 +10,28 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject, lifeTime);
     }
 
+    // 子弹与碰撞物体触发时
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy") || other.CompareTag("Ore"))
+        // 检查子弹是否与敌人碰撞
+        if (other.CompareTag("Enemy"))
         {
-            // 这里可以调用敌人或矿石的受伤逻辑
-            Debug.Log($"{other.name} 被击中！");
-            Destroy(gameObject);
+            EnemyAI enemy = other.GetComponent<EnemyAI>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage); // 伤害敌人
+            }
         }
+
+        // 检查子弹是否与矿石碰撞
+        if (other.CompareTag("Ore"))
+        {
+            Ore ore = other.GetComponent<Ore>();  // 获取矿石组件
+            if (ore != null)
+            {
+                ore.TakeDamage(damage);  // 给矿石伤害
+            }
+        }
+
     }
 }

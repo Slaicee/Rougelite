@@ -3,7 +3,7 @@ using UnityEngine;
 public class OrePickuped : MonoBehaviour
 {
     public int oreAmount = 1;
-    public float pickupRange = 1f;
+    public float pickupRange = 3f;
     private Transform player;
     private UIManager uiManager;
 

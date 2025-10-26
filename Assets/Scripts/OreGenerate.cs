@@ -14,7 +14,7 @@ public class OreGenerate : MonoBehaviour
         {
             Vector3 randomPos = new Vector3(
                 Random.Range(-generateRange, generateRange),
-                1f, 
+                2f, 
                 Random.Range(-generateRange, generateRange)
             );
             Instantiate(orePrefab, randomPos, Quaternion.identity);

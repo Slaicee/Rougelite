@@ -963,9 +963,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefabs:
   - {fileID: 6061598487611627331, guid: 0dc407efbfceb3f428fb66b075b88e2b, type: 3}
-  enemyCount: 10
+  initialEnemyCount: 10
+  enemyCountIncrease: 2
   mapSize: 70
   minSpawnDistance: 3
+  waveInterval: 20
   player: {fileID: 365506403}
 --- !u!4 &633493349
 Transform:
@@ -1314,6 +1316,11 @@ PrefabInstance:
     - target: {fileID: 2510457638178477588, guid: 516d38c502d19eb4681ebdc416e93726,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868978832069020673, guid: 516d38c502d19eb4681ebdc416e93726,
+        type: 3}
+      propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3577641126610719765, guid: 516d38c502d19eb4681ebdc416e93726,

@@ -30,8 +30,8 @@ Transform:
   m_GameObject: {fileID: 6061598487611627331}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.9915276, y: 6.248369, z: 4.0921993}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 7.9915276, y: 2, z: 4.0921993}
+  m_LocalScale: {x: 1, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -149,4 +149,8 @@ MonoBehaviour:
   moveSpeed: 10
   detectRange: 70
   avoidRadius: 2.5
+  health: 10
+  damage: 5
+  oreDropPrefab: {fileID: 8951114804786482460, guid: 4024bcabeccbde446a96c38d4ed90123,
+    type: 3}
   player: {fileID: 2510457638178477588, guid: 516d38c502d19eb4681ebdc416e93726, type: 3}
