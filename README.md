@@ -18,3 +18,9 @@
 - 实现enemy自动侦测玩家位置，自动朝玩家移动，解决了enemy与player在update时的冲突问题：将enemy的位移方式从rb改为transform.position
 - 解决了enemy与ore碰撞的问题：直接取消layer的物理碰撞
 - 解决了enemy会在玩家周围聚成一坨的问题：添加avoidRadius
+
+## 2025-10-26（Slaice）
+- 完善了enemy死亡销毁及掉落矿石机制，修改了EnemyAI
+- 完善了ore摧毁后矿石掉落机制，并解决掉落数量以及拾取范围bug
+- 解决了生成enemy因为朝向玩家移动导致的悬空bug
+- 添加了随时间生成波数enemy的功能
