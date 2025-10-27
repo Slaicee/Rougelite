@@ -24,3 +24,8 @@
 - 完善了ore摧毁后矿石掉落机制，并解决掉落数量以及拾取范围bug
 - 解决了生成enemy因为朝向玩家移动导致的悬空bug
 - 添加了随时间生成波数enemy的功能
+
+## 2025-10-27（Slaice）
+- 添加了enemy近战攻击player的功能，写在EnemyAI中
+- 修复了enemy因为is Kinematic会与玩家重合的问题
+- 添加了player阵亡时的UI界面，可以选择重新开始游戏
