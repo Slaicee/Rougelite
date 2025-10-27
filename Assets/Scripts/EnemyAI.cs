@@ -3,15 +3,19 @@ using System.Collections.Generic;
 
 public class EnemyAI : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float detectRange = 70f;
-    public float avoidRadius = 2.5f; // 敌人之间最小间隔
-    public float health = 10f;       // 血量
-    public float damage = 5f;        // 每次攻击造成的伤害
-    public GameObject oreDropPrefab; // 矿石掉落预制体
+    public float moveSpeed = 5f;         // 敌人的移动速度
+    public float detectRange = 70f;      // 敌人追踪玩家的范围
+    public float avoidRadius = 2.5f;     // 敌人之间的最小间距
+    public float health = 10f;           // 敌人的血量
+    public float damage = 2f;            // 敌人的攻击伤害
+    public GameObject oreDropPrefab;     // 矿石掉落预制体
+    public float attackRange = 3f;       // 敌人的攻击范围
+    public float attackCooldown = 1f;    // 攻击冷却时间
+    private float lastAttackTime = 0f;   // 上次攻击时间
 
     public Transform player;
     private Rigidbody rb;
+    private UIManager uiManager;
     private static List<EnemyAI> allEnemies = new List<EnemyAI>();
 
     void OnEnable() => allEnemies.Add(this);
@@ -22,12 +26,14 @@ public class EnemyAI : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        uiManager = FindObjectOfType<UIManager>();
     }
 
     void Update()
     {
         if (player == null) return;
 
+        // 追踪玩家
         Vector3 moveDir = Vector3.zero;
         float distance = Vector3.Distance(transform.position, player.position);
         if (distance <= detectRange)
@@ -47,9 +53,20 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        if (moveDir != Vector3.zero)
+        // 移动
+        if (distance >= attackRange - 0.1f)
         {
-            transform.position += moveDir.normalized * moveSpeed * Time.deltaTime;
+            if (moveDir != Vector3.zero)
+            {
+                transform.position += moveDir.normalized * moveSpeed * Time.deltaTime;
+            }
+        }
+
+        // 攻击玩家逻辑
+        if (distance <= attackRange && Time.time >= lastAttackTime + attackCooldown)
+        {
+            AttackPlayer();
+            lastAttackTime = Time.time;
         }
     }
 
@@ -89,6 +106,16 @@ public class EnemyAI : MonoBehaviour
 
                 Instantiate(oreDropPrefab, this.transform.position + randomOffset, Quaternion.identity);
             }
+        }
+    }
+
+    // 近战攻击玩家
+    void AttackPlayer()
+    {
+        if (uiManager != null)
+        {
+            uiManager.TakeDamage(damage);
+            Debug.Log($"敌人攻击玩家，造成{damage}点伤害！");
         }
     }
 
