@@ -153,4 +153,6 @@ MonoBehaviour:
   damage: 5
   oreDropPrefab: {fileID: 8951114804786482460, guid: 4024bcabeccbde446a96c38d4ed90123,
     type: 3}
+  attackRange: 3
+  attackCooldown: 1
   player: {fileID: 2510457638178477588, guid: 516d38c502d19eb4681ebdc416e93726, type: 3}
