@@ -9,14 +9,15 @@ public class EnemyAI : MonoBehaviour
     public float health = 10f;           // 敌人的血量
     public float damage = 2f;            // 敌人的攻击伤害
     public GameObject oreDropPrefab;     // 矿石掉落预制体
-    public float attackRange = 3f;       // 敌人的攻击范围
+    public float attackRange = 5f;       // 敌人的攻击范围
     public float attackCooldown = 1f;    // 攻击冷却时间
-    private float lastAttackTime = 0f;   // 上次攻击时间
+    public float lastAttackTime = 0f;    // 上次攻击时间
 
     public Transform player;
     private Rigidbody rb;
     private UIManager uiManager;
     private static List<EnemyAI> allEnemies = new List<EnemyAI>();
+    private Animator animator;
 
     void OnEnable() => allEnemies.Add(this);
     void OnDisable() => allEnemies.Remove(this);
@@ -27,6 +28,8 @@ public class EnemyAI : MonoBehaviour
         rb.isKinematic = true;
         player = GameObject.FindGameObjectWithTag("Player").transform;
         uiManager = FindObjectOfType<UIManager>();
+        animator = GetComponentInChildren<Animator>();
+        if (animator == null) Debug.LogError("敌人缺少Animator组件！");
     }
 
     void Update()
@@ -39,6 +42,11 @@ public class EnemyAI : MonoBehaviour
         if (distance <= detectRange)
         {
             moveDir = (player.position - transform.position).normalized;
+            animator.SetBool("IsRunning", true); // 跑步
+        }
+        else
+        {
+            animator.SetBool("IsRunning", false); // 待机
         }
 
         // 推开附近的敌人
@@ -74,6 +82,7 @@ public class EnemyAI : MonoBehaviour
     public void TakeDamage(float amount)
     {
         health -= amount;
+        animator?.SetTrigger("TakeDamage"); // 触发受击动画
         if (health <= 0f)
         {
             Die();
@@ -84,7 +93,7 @@ public class EnemyAI : MonoBehaviour
     {
         // 触发矿石掉落
         DropOre();
-
+        animator?.SetTrigger("Die"); // 触发死亡动画
         // 销毁敌人
         Destroy(gameObject);  // 删除敌人
     }
@@ -112,10 +121,33 @@ public class EnemyAI : MonoBehaviour
     // 近战攻击玩家
     void AttackPlayer()
     {
-        if (uiManager != null)
+        // 仅当玩家在攻击范围内时，才触发攻击动画
+        float currentDistance = Vector3.Distance(transform.position, player.position);
+        if (currentDistance <= attackRange)
+        {
+            animator?.SetTrigger("Attack");
+            lastAttackTime = Time.time; // 刷新冷却时间
+        }
+    }
+
+    // 动画事件调用
+    public void DealDamage()
+    {
+        // 1. 先检查玩家是否存在（防止玩家已死亡/销毁）
+        if (player == null || uiManager == null) return;
+
+        // 2. 计算当前敌人与玩家的实时距离
+        float currentDistance = Vector3.Distance(transform.position, player.position);
+
+        // 3. 只有当实时距离 <= 攻击范围时，才扣血
+        if (currentDistance <= attackRange)
         {
             uiManager.TakeDamage(damage);
-            Debug.Log($"敌人攻击玩家，造成{damage}点伤害！");
+            Debug.Log($"动画触发攻击，玩家在范围内，造成{damage}点伤害！");
+        }
+        else
+        {
+            Debug.Log($"动画触发攻击，但玩家已离开范围，未造成伤害");
         }
     }
 
