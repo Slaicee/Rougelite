@@ -37,6 +37,7 @@
 - 将找到的模型、贴图import到项目中
 - 给ore和oredrop添加模型，调整色彩和大小
 - 给enemy1添加模型，并引入动画系统，完成animator controller的连接，并添加Parameters
+- 添加了模型始终朝向玩家的功能（EnemyModel脚本）：模型旋转
 - 修改脚本（EnemyAI和EnemyGenerate）使其触发Parameters，调整各个动画状态的响应顺序，实现完整动画逻辑
 - 修复DealDamage函数在Events无法被找到的问题：子物体没有挂载EnemyAI，添加了中间脚本EventForwarder
 - 解决了enemy伤害出伤时间、伤害范围判定、动画切换迟钝等问题
