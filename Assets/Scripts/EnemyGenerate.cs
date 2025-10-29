@@ -76,7 +76,7 @@ public class EnemyGenerate : MonoBehaviour
             spawned++;
         }
 
-        Debug.Log($" 成功生成 {spawned} 个敌人 (尝试 {attempts} 次)");
+        Debug.Log($" 成功生成{spawned}个敌人 (尝试{attempts}次)");
     }
 
 
