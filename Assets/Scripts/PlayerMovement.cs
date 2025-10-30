@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public float inputThreshold = 0.1f; // 输入阈值（关键参数，过滤微小输入）
     private Rigidbody rb;
     private Vector3 moveDir;
+    public Animator animator;
 
     void Start()
     {
@@ -27,10 +28,12 @@ public class PlayerMovement : MonoBehaviour
         if (rawInput.magnitude < inputThreshold)
         {
             moveDir = Vector3.zero; // 无输入时，移动方向为零（停止）
+            animator.SetBool("isRunning", false);
         }
         else
         {
             moveDir = rawInput.normalized; // 输入足够时，归一化保持匀速
+            animator.SetBool("isRunning", true);
         }
     }
 

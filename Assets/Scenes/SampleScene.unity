@@ -122,6 +122,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &49176342 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 580831304895379155, guid: 516d38c502d19eb4681ebdc416e93726,
+    type: 3}
+  m_PrefabInstance: {fileID: 889371635}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &152983593
 GameObject:
   m_ObjectHideFlags: 0
@@ -1326,7 +1332,9 @@ MonoBehaviour:
   deathUI: {fileID: 1205708803}
   maxHealth: 100
   gameTime: 120
-  player: {fileID: 0}
+  player: {fileID: 49176342}
+  playerAnimator: {fileID: 1711282253}
+  deathUiDelay: 0.7
 --- !u!4 &787753945
 Transform:
   m_ObjectHideFlags: 0
@@ -1958,6 +1966,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1395812620}
   m_CullTransparentMesh: 1
+--- !u!95 &1711282253 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5958363324354971588, guid: 516d38c502d19eb4681ebdc416e93726,
+    type: 3}
+  m_PrefabInstance: {fileID: 889371635}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1792412891
 GameObject:
   m_ObjectHideFlags: 0

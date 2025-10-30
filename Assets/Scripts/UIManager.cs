@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class UIManager : MonoBehaviour
 
     [Header("Player Object")]
     public GameObject player;               // 玩家对象引用（用于销毁或动画）
+    public Animator playerAnimator;         // 可在 Inspector 手动指定（优先使用）
+    public float deathUiDelay = 0.7f;       // 默认等待动画时间（秒），可按动画长度调整
+
 
     void Start()
     {
@@ -43,6 +47,14 @@ public class UIManager : MonoBehaviour
 
         if (deathUI != null)
             deathUI.SetActive(false);
+
+        // 缓存Animator
+        if (playerAnimator == null && player != null)
+        {
+            playerAnimator = player.GetComponentInChildren<Animator>();
+            if (playerAnimator == null)
+                Debug.LogWarning("UIManager：未在player或其子物体中找到Animator，请在Inspector指定playerAnimator。");
+        }
     }
 
     void Update()
@@ -114,25 +126,47 @@ public class UIManager : MonoBehaviour
     void PlayerDie()
     {
         isGameActive = false;
-
         Debug.Log("玩家死亡！");
 
-        // 停止玩家控制（可选）
         if (player != null)
         {
-            Destroy(player);  // 直接销毁玩家
-            // 如果未来想加死亡动画，用 Animator.Play("Die") 替代 Destroy
-        }
+            // 播放死亡动画
+            if (playerAnimator != null)
+            {
+                playerAnimator.SetBool("isDead", true);
+            }
 
-        // 弹出阵亡UI
-        if (deathUI != null)
+            // 禁用玩家的控制脚本（只禁用移动与射击等，不禁用UI/管理脚本）
+            var movement = player.GetComponent<PlayerMovement>();
+            if (movement != null) movement.enabled = false;
+
+            var shooter = player.GetComponent<PlayerShoot>();
+            if (shooter != null) shooter.enabled = false;
+
+            // 启动协程等待动画（用不受timescale影响的等待）
+            StartCoroutine(ShowDeathUIAfterAnimation());
+        }
+        else
         {
-            deathUI.SetActive(true);
+            // 没找到player，直接显示UI
+            if (deathUI != null) deathUI.SetActive(true);
+            Time.timeScale = 0f;
         }
+    }
 
-        // 暂停游戏时间
+    private IEnumerator ShowDeathUIAfterAnimation()
+    {
+        yield return new WaitForSecondsRealtime(deathUiDelay);
+
+        // 弹出死亡UI
+        if (deathUI != null)
+            deathUI.SetActive(true);
+
+        // 最后暂停整个游戏
         Time.timeScale = 0f;
     }
+
+
     // 重新开始游戏
     public void RestartGame()
     {
