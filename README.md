@@ -41,3 +41,8 @@
 - 修改脚本（EnemyAI和EnemyGenerate）使其触发Parameters，调整各个动画状态的响应顺序，实现完整动画逻辑
 - 修复DealDamage函数在Events无法被找到的问题：子物体没有挂载EnemyAI，添加了中间脚本EventForwarder
 - 解决了enemy伤害出伤时间、伤害范围判定、动画切换迟钝等问题
+
+## 2025-10-30（Slaice）
+- 给player添加模型，并加入动画系统：实现移动、射击、阵亡效果
+- 添加了Avatar Mask（UpperBodyMask），实现了动画的覆盖：实现移动时射击功能
+- 修改了firePoint不随模型旋转的问题：将firepoint变成model子物体即可
