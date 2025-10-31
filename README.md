@@ -46,3 +46,8 @@
 - 给player添加模型，并加入动画系统：实现移动、射击、阵亡效果
 - 添加了Avatar Mask（UpperBodyMask），实现了动画的覆盖：实现移动时射击功能
 - 修改了firePoint不随模型旋转的问题：将firepoint变成model子物体即可
+
+## 2025-10-31（Slaice）
+- 添加天空盒
+- 添加子弹模型
+- 添加了准心Crosshair及其UI，给UIManager添加了CursorManager脚本
