@@ -51,3 +51,8 @@
 - 添加天空盒
 - 添加子弹模型
 - 添加了准心Crosshair及其UI，给UIManager添加了CursorManager脚本
+
+## 2025-11-1（Slaice）
+- 添加了Terrain Tools，制作了简略的地图场景，添加了TerrainSampleAssert，改变了参数和材质
+- 添加了空气墙AirWalls，防止player越界，并加入了防穿墙的检测
+- 添加了一些树
