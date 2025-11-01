@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
-  detectRange: 70
+  detectRange: 150
   avoidRadius: 2.5
   health: 10
   damage: 5

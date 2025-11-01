@@ -42,7 +42,11 @@ public class PlayerMovement : MonoBehaviour
         // 只有当moveDir不为零时才移动（避免微小移动）
         if (moveDir != Vector3.zero)
         {
-            rb.MovePosition(rb.position + moveDir * moveSpeed * Time.fixedDeltaTime);
+            float moveDistance = moveSpeed * Time.fixedDeltaTime;
+            if (!Physics.Raycast(rb.position, moveDir, moveDistance + 0.05f))
+            {
+                rb.MovePosition(rb.position + moveDir * moveDistance);
+            }
         }
     }
 }

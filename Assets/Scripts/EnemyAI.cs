@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class EnemyAI : MonoBehaviour
 {
     public float moveSpeed = 5f;         // 敌人的移动速度
-    public float detectRange = 70f;      // 敌人追踪玩家的范围
+    public float detectRange = 150f;      // 敌人追踪玩家的范围
     public float avoidRadius = 2.5f;     // 敌人之间的最小间距
     public float health = 10f;           // 敌人的血量
     public float damage = 2f;            // 敌人的攻击伤害
