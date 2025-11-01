@@ -5,8 +5,8 @@ using UnityEngine;
 public class OreGenerate : MonoBehaviour
 {
     public GameObject orePrefab;
-    public int oreCount = 20;//生成数量
-    public float generateRange = 70f;//生成范围
+    public int oreCount = 30;//生成数量
+    public float generateRange = 150f;//生成范围
     // Start is called before the first frame update
     void Start()
     {

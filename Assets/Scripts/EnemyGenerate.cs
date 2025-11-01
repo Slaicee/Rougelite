@@ -7,8 +7,8 @@ public class EnemyGenerate : MonoBehaviour
     [Header("敌人生成设置")]
     public GameObject[] enemyPrefabs;    // 敌人预制体数组
     public int initialEnemyCount = 10;   // 初始波敌人数量
-    public int enemyCountIncrease = 2;   // 每波增加的敌人数量
-    public float mapSize = 70f;          // 地图范围（Plane大小一半）
+    public int enemyCountIncrease = 5;   // 每波增加的敌人数量
+    public float mapSize = 120f;          // 地图范围（Plane大小一半）
     public float minSpawnDistance = 3f;  // 生成间距，防止重叠
     public float waveInterval = 20f;     // 每波生成的时间间隔（秒）
 
