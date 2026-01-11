@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerState : MonoBehaviour
 {
-    public int ore = 0;
+    public int ore = 100;
 
     [Header("基础属性")]
     public float attack = 1f;

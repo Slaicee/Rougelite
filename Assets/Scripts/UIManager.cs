@@ -3,6 +3,9 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class UIManager : MonoBehaviour
 {
@@ -10,29 +13,33 @@ public class UIManager : MonoBehaviour
     public Slider HP;                       // 血条 Slider
     public TextMeshProUGUI hpText;          // 血量数值显示
     public TextMeshProUGUI oreText;         // 矿石数量
-    public TextMeshProUGUI timerText;       // 倒计时文本
+    // 游戏过程中显示的时长文本
+    public TextMeshProUGUI playTimeText;
+    // 阵亡UI里显示的时长文本
+    public TextMeshProUGUI deathPlayTimeText;
     public GameObject deathUI;              // 阵亡UI界面
+    public Button exitGameBtn;
 
-    [Header("Game Timer")]
-    public float gameTime = 240f;           // 总时长
-    private float timeLeft;
+    // 游戏进行时长
+    private float gamePlayTime = 0f;        // 累计游戏时长（秒），从0开始递增
     private bool isGameActive = true;       // 控制计时是否运行
     public bool IsPlayerDead => isGameActive == false;
+
     [Header("Player Object")]
-    public GameObject player;               // 玩家对象引用（用于销毁或动画）
-    public Animator playerAnimator;         // 可在 Inspector 手动指定（优先使用）
-    public float deathUiDelay = 1.25f;       // 默认等待动画时间（秒），可按动画长度调整
+    public GameObject player;               // 玩家对象引用
+    public Animator playerAnimator;         // 玩家动画器
+    public float deathUiDelay = 1.25f;      // 阵亡UI延迟显示时间
 
     [Header("Cursor Manager")]
-    public CursorManager cursorManager; // 拖入场景中的CursorManager对象
+    public CursorManager cursorManager;
 
     [Header("Player State")]
     public PlayerState playerState;
 
     void Start()
     {
-        Application.targetFrameRate = 60; // 强制限制帧率为60
-        QualitySettings.vSyncCount = 1;   // 开启垂直同步，避免帧率波动导致的额外负载
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 1;
 
         // 自动查找 PlayerState
         if (playerState == null && player != null)
@@ -51,8 +58,9 @@ public class UIManager : MonoBehaviour
 
         UpdateHealthUI();
         UpdateOreUI();
-        timeLeft = gameTime;
-        UpdateTimerUI();
+        // 初始化游戏时长
+        gamePlayTime = 0f;
+        UpdatePlayTimeUI();
 
         if (deathUI != null)
             deathUI.SetActive(false);
@@ -61,6 +69,15 @@ public class UIManager : MonoBehaviour
         if (playerAnimator == null && player != null)
         {
             playerAnimator = player.GetComponentInChildren<Animator>();
+        }
+
+        if (exitGameBtn != null)
+        {
+            exitGameBtn.onClick.AddListener(ExitGame);
+        }
+        else
+        {
+            Debug.LogWarning("UIManager：exitGameBtn 未赋值！请在Inspector中拖入退出游戏按钮");
         }
     }
 
@@ -72,8 +89,40 @@ public class UIManager : MonoBehaviour
         UpdateHealthUI();
         UpdateOreUI();
 
-        // 计时
-        UpdateTimer();
+        // 更新游戏进行时长（核心）
+        UpdateGamePlayTime();
+    }
+
+    // 累计并更新游戏进行时长
+    private void UpdateGamePlayTime()
+    {
+        // 检查游戏是否暂停（兼容PauseManager）
+        bool isPaused = false;
+        var pauseMgr = FindObjectOfType<PauseManager>();
+        if (pauseMgr != null) isPaused = pauseMgr.IsPaused;
+
+        // 只有游戏活跃且未暂停时，累计时长
+        if (isGameActive && !isPaused)
+        {
+            gamePlayTime += Time.deltaTime;
+            UpdatePlayTimeUI(); // 实时更新时长显示
+        }
+    }
+
+    private void UpdatePlayTimeUI()
+    {
+        if (playTimeText != null)
+        {
+            string formattedTime = FormatTime(gamePlayTime);
+            playTimeText.text = $"游戏时长：{formattedTime}";
+        }
+    }
+
+    private string FormatTime(float totalSeconds)
+    {
+        int minutes = Mathf.FloorToInt(totalSeconds / 60);
+        int seconds = Mathf.FloorToInt(totalSeconds % 60);
+        return $"{minutes}分{seconds}秒"; 
     }
 
     // 玩家收到伤害
@@ -81,11 +130,10 @@ public class UIManager : MonoBehaviour
     {
         if (playerState == null) return;
 
-        // 如果处于光之守护无敌状态，直接免疫伤害
         if (playerState.isInvincible)
         {
             Debug.Log("光之守护生效！免疫伤害：" + amount);
-            return; // 直接返回，不执行后续扣血逻辑
+            return;
         }
 
         playerState.currentHealth = Mathf.Clamp(playerState.currentHealth - amount, 0, playerState.maxHealth);
@@ -129,27 +177,6 @@ public class UIManager : MonoBehaviour
             oreText.text = $"矿石：{playerState.ore}";
     }
 
-    private void UpdateTimerUI()
-    {
-        if (timerText != null)
-            timerText.text = $"时间：{Mathf.CeilToInt(timeLeft)}s";
-    }
-
-    private void UpdateTimer()
-    {
-        if (timeLeft > 0)
-        {
-            timeLeft -= Time.deltaTime;
-            if (timeLeft < 0) timeLeft = 0;
-            UpdateTimerUI();
-        }
-        else
-        {
-            isGameActive = false;
-            Debug.Log("时间到，可以触发BOSS战或商店逻辑");
-        }
-    }
-
     // 玩家阵亡逻辑
     void PlayerDie()
     {
@@ -164,7 +191,7 @@ public class UIManager : MonoBehaviour
                 playerAnimator.SetBool("isDead", true);
             }
 
-            // 获取并禁用 PlayerController
+            // 禁用 PlayerController
             var playerCtrl = player.GetComponent<PlayerController>();
             if (playerCtrl != null)
                 playerCtrl.enabled = false;
@@ -174,20 +201,24 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            // 没找到player，直接显示UI
+            // 没找到player，直接显示UI并设置阵亡时长
             if (deathUI != null) deathUI.SetActive(true);
+            SetDeathPlayTimeUI();
             Time.timeScale = 0f;
         }
     }
 
     private IEnumerator ShowDeathUIAfterDelay(float delay)
     {
-        // 等待固定时间（不受 timescale 影响）
+        // 等待固定时间
         yield return new WaitForSecondsRealtime(delay);
 
         // 弹出死亡UI
         if (deathUI != null)
             deathUI.SetActive(true);
+
+        // 在阵亡UI显示最终时长
+        SetDeathPlayTimeUI();
 
         // 切换鼠标状态
         if (cursorManager != null)
@@ -197,12 +228,37 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-
+    // 设置阵亡UI的时长显示
+    private void SetDeathPlayTimeUI()
+    {
+        if (deathPlayTimeText != null)
+        {
+            string formattedTime = FormatTime(gamePlayTime);
+            deathPlayTimeText.text = $"本局时长：{formattedTime}";
+        }
+    }
 
     // 重新开始游戏
     public void RestartGame()
     {
         Time.timeScale = 1f; // 恢复时间
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ExitGame()
+    {
+        // 恢复游戏时间缩放（避免暂停状态下退出异常）
+        Time.timeScale = 1f;
+
+        // 区分编辑器和打包后的逻辑：
+        // 1. 编辑器中测试：停止游戏运行
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+        // 2. 打包后（PC/移动端）：退出游戏
+#else
+        Application.Quit();
+#endif
+
+        Debug.Log("退出游戏！");
     }
 }

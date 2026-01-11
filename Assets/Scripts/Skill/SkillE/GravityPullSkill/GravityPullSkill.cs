@@ -8,7 +8,7 @@ public class GravityPullSkill : SkillBase
     public GameObject gravityEffectPrefab; // 重力特效预制体（如引力场、漩涡）
     public float skillDuration = 3f; // 技能持续时间（秒）
     public float pullRadius = 40f; // 牵引半径（米）
-    public float oreMoveSpeed = 80f; // 矿石向玩家移动的速度
+    public float oreMoveSpeed = 200f; // 矿石向玩家移动的速度
     public Sprite skillIcon; // 技能图标（ShopUI展示用）
     private float cooldown;
 

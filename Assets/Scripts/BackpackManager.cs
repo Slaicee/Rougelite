@@ -9,7 +9,6 @@ public class BackpackManager : MonoBehaviour
     public static bool isBackpackOpen = false;
     [Header("UI 引用")]
     public GameObject backpackPanel; // 背包面板
-    // public Transform skillContainer; // 技能图标容器（已弃用）
     public GameObject skillItemPrefab; // 技能图标预制体
     public CursorManager cursorManager; // 光标管理器（复用现有）
 

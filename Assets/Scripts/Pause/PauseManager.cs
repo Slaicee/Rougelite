@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class PauseManager : MonoBehaviour
 {
-    // 引用暂停面板（后面会赋值）
+    // 引用暂停面板
     public GameObject pausePanel;
 
     public GameObject pauseIconBtn;
@@ -26,7 +30,6 @@ public class PauseManager : MonoBehaviour
 
     void Update()
     {
-
         UpdatePauseIconVisibility();
 
         // 只有在未打开商店和未打开背包时才响应ESC进行暂停/恢复
@@ -63,7 +66,7 @@ public class PauseManager : MonoBehaviour
         }
     }
 
-    // 继续游戏（绑定到「继续游戏」按钮）
+    // 继续游戏
     public void ResumeGame()
     {
         isPaused = false;
@@ -81,7 +84,7 @@ public class PauseManager : MonoBehaviour
         }
     }
 
-    // 重新开始游戏（绑定到「重新开始」按钮）
+    // 重新开始游戏
     public void RestartGame()
     {
         Time.timeScale = 1f; // 先恢复时间（避免重载后游戏卡住）
@@ -90,13 +93,28 @@ public class PauseManager : MonoBehaviour
         Cursor.visible = false; // 隐藏鼠标
         UpdatePauseIconVisibility(); // 重新开始时更新图标显示
     }
+
+    public void QuitGame()
+    {
+        // 恢复游戏时间
+        Time.timeScale = 1f;
+
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#else
+        // 打包后的游戏直接退出程序
+        Application.Quit();
+#endif
+    }
+
     public void OnPauseIconClicked()
     {
         PauseGame();
     }
+
     private void UpdatePauseIconVisibility()
     {
-        // 空值保护：如果图标按钮未赋值，不执行操作（避免空引用错误）
+        // 空值保护：如果图标按钮未赋值，不执行操作
         if (pauseIconBtn == null)
         {
             Debug.LogWarning("PauseManager：pauseIconBtn 未赋值！请在Inspector中关联图标按钮");
